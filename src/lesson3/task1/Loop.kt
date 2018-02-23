@@ -60,7 +60,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Найти количество цифр в заданном числе n.
  * Например, число 1 содержит 1 цифру, 456 -- 3 цифры, 65536 -- 5 цифр.
  */
-fun digitNumber(n: Int): Int = n.toString().length
+fun digitNumber(n: Int): Int = Math.abs(n).toString().length
 
 /**
  * Простая
@@ -143,7 +143,7 @@ fun sin(x: Double, eps: Double): Double {
     if (x > Math.PI / 2) return sin(Math.PI - x, eps)
 
     var degree = 0
-    var denominator = 1
+    var denominator = 1.0
     var term = x
     var result = 0.0
     var sign_counter = 0
@@ -177,7 +177,7 @@ fun cos(x: Double, eps: Double): Double = sin(Math.PI / 2 - x, eps)
 fun revert(n: Int): Int {
     var rem = n
     var reverted = 0
-    while (rem > 10) {
+    while (rem >= 10) {
         reverted = 10 * reverted + rem % 10
         rem /= 10
     }
@@ -216,7 +216,7 @@ fun squareSequenceDigit(n: Int): Int {
     var str = ""
     var i = 0
     while (str.length < n)
-        str += (++i * i).toString()
+        str += (++i * i)
 
     return str[n-1].toString().toInt() // any better?
 }
@@ -235,9 +235,8 @@ fun fibSequenceDigit(n: Int): Int {
 
     while (str.length < n) {
         fib.add(fib[i-1] + fib[i-2])
-        str += fib[i].toString()
+        str += fib[i]
         ++i
     }
-
     return str[n-1].toString().toInt()
 }
