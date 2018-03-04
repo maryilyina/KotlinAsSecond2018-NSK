@@ -216,7 +216,7 @@ fun convert(n: Int, base: Int): List<Int> {
         rem -= list.last()
         rem /= base
     }
-    return list.asReversed()
+    return if (!list.isEmpty()) list.asReversed() else listOf(0)
 }
 
 /**
