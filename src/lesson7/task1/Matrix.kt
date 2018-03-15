@@ -38,32 +38,47 @@ interface Matrix<E> {
  * height = высота, width = ширина, e = чем заполнить элементы.
  * Бросить исключение IllegalArgumentException, если height или width <= 0.
  */
-fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> = TODO()
+fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
+    val matrix = MatrixImpl<E>(height, width)
+    for (i in 0..width)
+        for (j in 0..height)
+            matrix[i, j] = e
+    return matrix
+}
 
 /**
  * Средняя сложность
  *
  * Реализация интерфейса "матрица"
  */
-class MatrixImpl<E> : Matrix<E> {
-    override val height: Int = TODO()
+class MatrixImpl<E>(override val height: Int, override val width: Int) : Matrix<E> {
 
-    override val width: Int = TODO()
+    private val map = mutableMapOf<Cell, E>()
 
-    override fun get(row: Int, column: Int): E  = TODO()
+    override fun get(row: Int, column: Int): E  = get(Cell(row, column))
 
-    override fun get(cell: Cell): E  = TODO()
+    override fun get(cell: Cell): E  = map[cell] ?: throw IndexOutOfBoundsException()
 
-    override fun set(row: Int, column: Int, value: E) {
-        TODO()
+    override fun set(row: Int, column: Int, value: E) = set(Cell(row, column), value)
+
+    override fun set(cell: Cell, value: E) { map[cell] = value }
+
+    override fun equals(other: Any?) =
+            other is MatrixImpl<*> && other.height == height && other.width == width
+                    && map.all { it == other[it.key] }
+
+    override fun toString(): String {
+        val str = StringBuilder()
+        str.append("[").appendln()
+        for (j in 0..height) {
+            for (i in 0..width)
+                str.append(get(i, j)).append(", ")
+            str.appendln()
+        }
+        str.append("]")
+        return "$str"
     }
 
-    override fun set(cell: Cell, value: E) {
-        TODO()
-    }
-
-    override fun equals(other: Any?) = TODO()
-
-    override fun toString(): String = TODO()
+    override fun hashCode(): Int = map.hashCode()
 }
 
