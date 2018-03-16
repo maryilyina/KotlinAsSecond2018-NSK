@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson8.task1
 
+import javafx.beans.binding.MapExpression
 import java.io.File
 
 /**
@@ -53,7 +54,15 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val map = substrings.associate { Pair(it, 0) }.toMutableMap()
+
+    for (line in File(inputName).readLines()) {
+        val l = line.toLowerCase()
+        map.onEach { (k, v) -> map[k] = v + (l.split(k.toLowerCase()).size - 1) }
+    }
+    return map
+}
 
 
 /**
@@ -70,7 +79,22 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val matches = listOf('ж', 'ч', 'ш', 'щ')
+    val corrections = mutableMapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у', 'Ы' to 'И', 'Я' to 'А', 'Ю' to 'У')
+
+    val outputStream = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        val arr = line.toCharArray()
+        for (i in 0..arr.lastIndex) {
+            matches.forEach {
+                if (arr[i].toLowerCase() == it && i + 1 < arr.size && arr[i + 1] in corrections)
+                    arr[i + 1] = corrections[arr[i + 1]] ?: arr[i + 1]
+            }
+        }
+        outputStream.write(arr)
+        outputStream.newLine()
+    }
+    outputStream.close()
 }
 
 /**
@@ -168,8 +192,29 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val fullDict = mutableMapOf<Char, String>()
+    dictionary.forEach {(k, v) -> fullDict[k.toLowerCase()] = v.toLowerCase() }
+
+    val outputStream = File(outputName).bufferedWriter()
+    val res = StringBuilder()
+
+    for (line in File(inputName).readLines()) {
+        for (ch in line.toCharArray()) {
+            val c = ch.toLowerCase()
+            res.append(when {
+                !fullDict.containsKey(c) -> ch
+                ch.isLowerCase() -> fullDict[c]
+                else -> fullDict[c]?.capitalize()
+            })
+        }
+        res.appendln()
+    }
+
+    outputStream.write(res.toString())
+    outputStream.close()
 }
+
+
 
 /**
  * Средняя
