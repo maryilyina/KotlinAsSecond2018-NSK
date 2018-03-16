@@ -113,7 +113,7 @@ fun abs(v: List<Double>): Double = Math.sqrt(v.fold(0.0){ sum, cur -> sum + cur 
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = list.fold(0.0) { sum, el -> sum + el / list.size }
+fun mean(list: List<Double>): Double = list.fold(0.0) { sum, el -> sum + el } / list.size
 
 /**
  * Средняя
@@ -125,10 +125,10 @@ fun mean(list: List<Double>): Double = list.fold(0.0) { sum, el -> sum + el / li
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val mean = mean(list)
-    list.forEachIndexed { i, _ -> list[i] -= mean }
+    for (i in 0..list.lastIndex)
+        list[i] -= mean
     return list
 }
-// = list.apply { val mean = mean(list); forEach {it - mean} } - doesn't work?
 
 /**
  * Средняя

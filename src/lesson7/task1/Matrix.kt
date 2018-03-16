@@ -40,8 +40,8 @@ interface Matrix<E> {
  */
 fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
     val matrix = MatrixImpl<E>(height, width)
-    for (i in 0..width)
-        for (j in 0..height)
+    for (i in 0 until height)
+        for (j in 0 until width)
             matrix[i, j] = e
     return matrix
 }
@@ -70,8 +70,8 @@ class MatrixImpl<E>(override val height: Int, override val width: Int) : Matrix<
     override fun toString(): String {
         val str = StringBuilder()
         str.append("[").appendln()
-        for (j in 0..height) {
-            for (i in 0..width)
+        for (i in 0 until height) {
+            for (j in 0 until width)
                 str.append(get(i, j)).append(", ")
             str.appendln()
         }

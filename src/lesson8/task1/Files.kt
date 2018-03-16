@@ -58,8 +58,19 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val map = substrings.associate { Pair(it, 0) }.toMutableMap()
 
     for (line in File(inputName).readLines()) {
-        val l = line.toLowerCase()
-        map.onEach { (k, v) -> map[k] = v + (l.split(k.toLowerCase()).size - 1) }
+        var l = line
+        while (!l.isEmpty()) {
+            for ((k, v) in map) {
+                var counter = 0
+                if (l.startsWith(k, ignoreCase = true))
+                    counter++
+                map[k] = v + counter
+            }
+            l = l.substring(startIndex = 1)
+        }
+
+        //жаль, что так нельзя. гораздо изящнее
+        //map.onEach { (k, v) -> map[k] = v + (l.split(k.toLowerCase()).size - 1) }
     }
     return map
 }
@@ -203,7 +214,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             val c = ch.toLowerCase()
             res.append(when {
                 !fullDict.containsKey(c) -> ch
-                ch.isLowerCase() -> fullDict[c]
+                !ch.isLetter() or ch.isLowerCase() -> fullDict[c]?.toLowerCase()
                 else -> fullDict[c]?.capitalize()
             })
         }
