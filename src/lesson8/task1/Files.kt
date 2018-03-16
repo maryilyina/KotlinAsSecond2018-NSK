@@ -209,16 +209,13 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val outputStream = File(outputName).bufferedWriter()
     val res = StringBuilder()
 
-    for (line in File(inputName).readLines()) {
-        for (ch in line.toCharArray()) {
-            val c = ch.toLowerCase()
-            res.append(when {
-                !fullDict.containsKey(c) -> ch
-                !ch.isLetter() or ch.isLowerCase() -> fullDict[c]?.toLowerCase()
-                else -> fullDict[c]?.capitalize()
-            })
-        }
-        res.appendln()
+    for (ch in File(inputName).readText().toCharArray()) {
+        val c = ch.toLowerCase()
+        res.append(when {
+            !fullDict.containsKey(c) -> ch
+            !ch.isLetter() or ch.isLowerCase() -> fullDict[c]?.toLowerCase()
+            else -> fullDict[c]?.capitalize()
+        })
     }
 
     outputStream.write(res.toString())
