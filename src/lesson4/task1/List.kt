@@ -182,16 +182,20 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    var product = 1
     val list = mutableListOf<Int>()
     var div = 2
-    while (product != n) {
-        if (n % (div * product) == 0) {
-            product *= div
+    var numb = n
+
+    while (numb != 1) {
+        while (numb % div == 0) {
             list.add(div)
+            numb /= div
         }
-        else if (++div * div * product > n) return list.also { it.add(n / product) }
+        div++
+        if (div * div > numb) break
     }
+
+    if (numb != 1) list.add(numb)
     return list
 }
 
@@ -217,7 +221,6 @@ fun convert(n: Int, base: Int): List<Int> {
     var rem = n
     while (rem > 0){
         list.add(rem % base)
-        rem -= list.last()
         rem /= base
     }
     return if (!list.isEmpty()) list.asReversed() else listOf(0)
@@ -232,15 +235,16 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 
-fun converter(i: Int): String {
-    return when {
+
+val converter = {i : Int ->
+    when {
         i < 10 -> "$i"
         else -> "${'a'.plus(i - 10)}"
     }
 }
 
 fun convertToString(n: Int, base: Int): String =
-        convert(n, base).joinToString(transform = {converter(it)}, separator = "")
+        convert(n, base).joinToString(transform = converter, separator = "")
 
 /**
  * Средняя
@@ -250,8 +254,9 @@ fun convertToString(n: Int, base: Int): String =
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int =
-        digits.asReversed().foldRightIndexed(0) { power, digit, res ->
-        res + digit * Math.pow(base.toDouble(), power.toDouble()).toInt()}
+        digits.asReversed().foldRightIndexed(0) {
+            pow, digit, res -> res + digit * Math.pow(base.toDouble(), pow.toDouble()).toInt()
+        }
 
 /**
  * Сложная
@@ -263,12 +268,11 @@ fun decimal(digits: List<Int>, base: Int): Int =
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val digits = mutableListOf<Int>()
-    str.forEach {
-        digits.add( when {
+    val digits = str.map {
+        when {
             it < 'a' -> it - '0'
             else -> it - 'a' + 10
-        })
+        }
     }
     return decimal(digits, base)
 }

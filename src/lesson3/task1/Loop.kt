@@ -123,8 +123,8 @@ fun isCoPrime(m: Int, n: Int): Boolean = (gcd(m, n) == 1)
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    val upperBound : Int = Math.floor(Math.sqrt(n.toDouble())).toInt()
-    val lowerBound : Int = Math.ceil(Math.sqrt(m.toDouble())).toInt()
+    val upperBound = Math.floor(Math.sqrt(n.toDouble())).toInt()
+    val lowerBound = Math.ceil(Math.sqrt(m.toDouble())).toInt()
     return upperBound >= lowerBound
 
 }
@@ -139,21 +139,19 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
 fun sin(x: Double, eps: Double): Double {
     if (x < 0) return -sin(-x, eps)
     if (x > 2 * Math.PI) return sin(x % (2 * Math.PI), eps)
-    if (x > Math.PI) return -sin(2 * Math.PI - x, eps)
-    if (x > Math.PI / 2) return sin(Math.PI - x, eps)
 
     var degree = 0
     var denominator = 1.0
     var term = x
     var result = 0.0
-    var sign_counter = 0
+    var signCounter = 0
 
     while (Math.abs(term) >= eps) {
         denominator *= ++degree
         if (degree % 2 == 0) continue
 
         term = Math.pow(x, degree.toDouble()) / denominator
-        result += term * (if (++sign_counter % 2 == 0) -1 else 1)
+        result += term * (if (++signCounter % 2 == 0) -1 else 1)
     }
     return result
 }
@@ -214,14 +212,16 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun squareSequenceDigit(n: Int): Int {
     var i = 0
-    var full_len = 0
+    var totalLen = 0
     var square = ""
-    while (full_len < n) {
-        square = (++i * i).toString()
-        full_len += square.length
+
+    while (totalLen < n) {
+        i++
+        square = (i * i).toString()
+        totalLen += square.length
     }
 
-    return square[n - 1 - (full_len - square.length)].toString().toInt() // any better?
+    return square[n - 1 - (totalLen - square.length)].toString().toInt() // any better?
 }
 
 /**
@@ -232,14 +232,16 @@ fun squareSequenceDigit(n: Int): Int {
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var str = "1"
-    val fib = mutableListOf(0, 1)
-    var i = 2
+    var totalLen = 0
+    var prev1 = 0
+    var prev2 = 1
+    var cur: String
 
-    while (str.length < n) {
-        fib.add(fib[i-1] + fib[i-2])
-        str += fib[i]
-        ++i
-    }
-    return str[n-1].toString().toInt()
+    do {
+        cur = (prev1 + prev2).toString()
+        totalLen += cur.length
+        prev2 = prev1.also { prev1 += prev2 }
+    } while (totalLen < n)
+
+    return cur.reversed()[totalLen - n].toString().toInt()
 }

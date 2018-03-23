@@ -65,12 +65,12 @@ class MatrixImpl<E>(override val height: Int, override val width: Int) : Matrix<
     override fun set(cell: Cell, value: E) { map[cell] = value }
 
     override fun equals(other: Any?) =
-            other is MatrixImpl<*> && other.height == height && other.width == width
-                    && map.all { it == other[it.key] }
+            other is MatrixImpl<*> && other.height == height && other.width == width && this.map == other.map
 
     override fun toString(): String {
         val str = StringBuilder()
         str.append("[").appendln()
+
         for (i in 0 until height) {
             for (j in 0 until width)
                 str.append(get(i, j)).append(", ")

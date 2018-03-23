@@ -213,7 +213,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         val c = ch.toLowerCase()
         res.append(when {
             !fullDict.containsKey(c) -> ch
-            !ch.isLetter() or ch.isLowerCase() -> fullDict[c]?.toLowerCase()
+            !ch.isLetter() || ch.isLowerCase() -> fullDict[c]?.toLowerCase()
             else -> fullDict[c]?.capitalize()
         })
     }

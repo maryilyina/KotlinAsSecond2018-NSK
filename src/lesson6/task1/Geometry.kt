@@ -79,7 +79,7 @@ data class Circle(val center: Point, val radius: Double) {
             when (this.intersects(other)) {
                 false -> center.distance(other.center) - radius - other.radius
                 true -> 0.0
-    }
+            }
 
     /**
      * Тривиальная
@@ -240,7 +240,7 @@ fun findNearestCirclePair(vararg circles: Circle): CirclePair {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    val center = bisectorByPoints(a, c).crossPoint(bisectorByPoints(b, c))
+    val center = bisectorByPoints(c, a).crossPoint(bisectorByPoints(b, c))
     val radius = a.distance(center)
     return Circle(center, radius)
 }

@@ -73,9 +73,10 @@ fun dateStrToDigit(str: String): String {
 
     val monthToInt = listOf("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
-    val month = monthToInt.firstOrNull({ name -> parts[1] == name}) ?: return ""
+    val month = monthToInt.indexOfFirst { name -> parts[1] == name } + 1
 
-    return String.format("%02d.%02d.%d", parts[0].toInt(), monthToInt.indexOf(month) + 1, parts[2].toInt())
+    return if (month == 0) ""
+    else String.format("%02d.%02d.%d", parts[0].toInt(), month, parts[2].toInt())
 }
 
 
@@ -96,7 +97,7 @@ fun dateDigitToStr(digital: String): String {
         val m = parts[1].toInt()
         if (m > monthToInt.size || m < 1) return ""
 
-        return String.format("%1d %s %s", parts[0].toInt(), monthToInt[parts[1].toInt() - 1], parts[2])
+        return String.format("%1d %s %s", parts[0].toInt(), monthToInt[m - 1], parts[2])
     }
     catch (e: NumberFormatException) { return "" }
 }
@@ -117,7 +118,7 @@ fun flattenPhoneNumber(phone: String): String {
     val accepted = listOf('1', '2', '3', '4', '5', '6', '7', '8', '9', '+')
     var formatted = phone.replace(regex = "[-()} ]".toRegex(), replacement = "")
     if (phone == "" || phone == "+") return ""
-    return if (formatted.filterNot { accepted.contains(it) }.isEmpty()) formatted else ""
+    return if (formatted.all { it in accepted }) formatted else ""
 }
 
 /**

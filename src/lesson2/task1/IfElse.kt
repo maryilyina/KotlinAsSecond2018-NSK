@@ -54,14 +54,14 @@ fun ageDescription(age: Int): String {
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
-    var dist_res = (v1 * t1 + v2 * t2 + v3 * t3) / 2
-    if (dist_res <= v1 * t1) return dist_res / v1
+    var distRes = (v1 * t1 + v2 * t2 + v3 * t3) / 2
+    if (distRes <= v1 * t1) return distRes / v1
 
-    dist_res -= v1 * t1
-    if (dist_res <= v2 * t2) return t1 + dist_res / v2
+    distRes -= v1 * t1
+    if (distRes <= v2 * t2) return t1 + distRes / v2
 
-    dist_res -= v2 * t2
-    return t1 + t2 + dist_res / v3
+    distRes -= v2 * t2
+    return t1 + t2 + distRes / v3
 }
 
 /**
@@ -78,11 +78,11 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX2: Int, rookY2: Int): Int {
     val rook1Threat = (kingX == rookX1) || (kingY == rookY1)
     val rook2Threat = (kingX == rookX2) || (kingY == rookY2)
-    return when(Pair(rook1Threat, rook2Threat)) {
-        Pair(false, false) -> 0
-        Pair(true,  false) -> 1
-        Pair(false, true)  -> 2
-        else -> 3
+    return when {
+        rook1Threat && rook2Threat -> 3
+        rook2Threat -> 2
+        rook1Threat -> 1
+        else -> 0
     }
 }
 
@@ -101,11 +101,11 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           bishopX: Int, bishopY: Int): Int {
     val rookThreat = (kingX == rookX) || (kingY == rookY)
     val bishopThreat = (kingX + kingY == bishopX + bishopY) || (kingX - kingY == bishopX - bishopY)
-    return when(Pair(rookThreat, bishopThreat)) {
-        Pair(false, false) -> 0
-        Pair(true,  false) -> 1
-        Pair(false, true)  -> 2
-        else -> 3
+    return when {
+        rookThreat && bishopThreat -> 3
+        bishopThreat -> 2
+        rookThreat -> 1
+        else -> 0
     }
 }
 
@@ -121,7 +121,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     if (a + b < c || a + c < b || b + c < a)
         return -1
 
-    val sides = arrayOf(a*a, b*b, c*c).sorted()
+    val sides = arrayOf(a * a, b * b, c * c).sorted()
     return 1 + Math.signum(sides[2] - sides[1] - sides[0]).toInt()
 }
 
@@ -133,13 +133,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    val left =   if (a < c) Pair(a, b) else Pair(c, d)
-    val right =  if (a < c) Pair(c, d) else Pair(a, b)
-
-    return when {
-        right.first > left.second -> -1
-        right.second < left.second -> right.second - right.first
-        else -> left.second - right.first
-    }
-}
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+        when {
+            a in c..d  -> Math.min(b, d) - a
+            c in a..b  -> Math.min(b, d) - c
+            else -> -1
+        }
